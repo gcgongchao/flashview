@@ -1,7 +1,7 @@
 flashview
 =========
 
-首页广告位轮播，用于应用程序首页的轮播图，如下图所展示：
+首页广告位轮播，用于应用程序首页的轮播图，如下图所展示（gif制作的不好，影响效果了，先这样吧，下更新，制作一副比较好的gif图片）：
 
  ![image] (https://github.com/gcgongchao/flashview/raw/master/images/flashviewgit.gif)
  
