@@ -10,20 +10,20 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 //UIL
-public class ImageLoaderWraper{
+public class ImageLoaderTools{
 
-	private static ImageLoaderWraper mImageLoaderWrapper;
+	private static ImageLoaderTools mImageLoaderWrapper;
 	private static ImageLoader mImageLoader;
 	private static final int DISK_CACHE_SIZE_BYTES = 50 * 1024 * 1024;
 	private static final int MEMORY_CACHE_SIZE_BYTES = 2 * 1024 * 1024;
 
-	private ImageLoaderWraper(Context context){
+	private ImageLoaderTools(Context context){
 		setImageLoader(initImageLoader(context));
 	}
 	
-	public static ImageLoaderWraper getInstance(Context context){
+	public static ImageLoaderTools getInstance(Context context){
 		if(mImageLoaderWrapper == null){
-			mImageLoaderWrapper = new ImageLoaderWraper(context);
+			mImageLoaderWrapper = new ImageLoaderTools(context);
 			return mImageLoaderWrapper;
 		}else{
 			return mImageLoaderWrapper;
@@ -57,7 +57,7 @@ public class ImageLoaderWraper{
 	}
 
 	private static void setImageLoader(ImageLoader mImageLoader) {
-		ImageLoaderWraper.mImageLoader = mImageLoader;
+		ImageLoaderTools.mImageLoader = mImageLoader;
 	}
 
 	//封装方法
