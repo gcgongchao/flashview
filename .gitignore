@@ -2,11 +2,7 @@
 *.apk
 *.ap_
 
-.classpath
-.project
-.settings
-bin
-gen
+
 # Files for the Dalvik VM
 *.dex
 
@@ -31,3 +27,9 @@ proguard/
 
 # Log Files
 *.log
+# Eclipse project files
+.classpath
+.project
+.settings
+bin
+gen

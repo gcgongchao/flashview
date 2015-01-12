@@ -2,7 +2,11 @@
 *.apk
 *.ap_
 
-
+.classpath
+.project
+.settings
+bin
+gen
 # Files for the Dalvik VM
 *.dex
 
@@ -11,7 +15,7 @@
 
 # Generated files
 bin/
-bin/*.jar
+bin/
 gen/
 
 # Gradle files
