@@ -46,7 +46,7 @@ import android.widget.Scroller;
 
 
 /**
- * .gitignore文件
+ * .gitignore文件fff
  * @author Android将军
  *
  */
