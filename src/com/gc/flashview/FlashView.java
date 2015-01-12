@@ -47,7 +47,7 @@ import android.widget.Scroller;
 
 /**
  * 
- * @author Chao Gong
+ * @author Android将军
  *
  */
 @SuppressLint("HandlerLeak")
