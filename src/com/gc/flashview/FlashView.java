@@ -54,7 +54,7 @@ import android.widget.Scroller;
 public class FlashView extends FrameLayout {
 
    
-	private ImageLoaderWraper imageLoaderWraper;
+	private ImageLoaderTools imageLoaderTools;
 	private ImageHandler mhandler = new ImageHandler(new WeakReference<FlashView>(this));
     
     private List<String> imageUris;
@@ -87,7 +87,7 @@ public class FlashView extends FrameLayout {
     	  imageViewsList = new ArrayList<ImageView>();
           dotViewsList = new ArrayList<ImageView>();
           imageUris=new ArrayList<String>();
-          imageLoaderWraper=ImageLoaderWraper.getInstance(context.getApplicationContext());
+          imageLoaderTools=ImageLoaderTools.getInstance(context.getApplicationContext());
           LayoutInflater.from(context).inflate(R.layout.layout_slideshow, this, true);
           mLinearLayout=(LinearLayout)findViewById(R.id.linearlayout);
           mViewPager = (ViewPager) findViewById(R.id.viewPager);
@@ -107,7 +107,7 @@ public class FlashView extends FrameLayout {
         for(int i=0;i<imageUris.size();i++){
         	ImageView imageView=new ImageView(getContext());
         	imageView.setScaleType(ScaleType.FIT_XY);//锟斤拷锟斤拷锟斤拷幕
-        	imageLoaderWraper.displayImage(imageUris.get(i), imageView);
+        	imageLoaderTools.displayImage(imageUris.get(i), imageView);
         	imageViewsList.add(imageView);
         	ImageView viewDot =  new ImageView(getContext());
         		if(i == 0){  
