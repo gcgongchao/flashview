@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
+import android.provider.ContactsContract.CommonDataKinds.Im;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -42,12 +43,13 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
+import android.widget.Toast;
 
 
 
 /**
- * .gitignore文件fff
- * @author Android将军sdddd
+ * 
+ * @author Android将军
  *
  */
 @SuppressLint("HandlerLeak")
@@ -62,8 +64,11 @@ public class FlashView extends FrameLayout {
     private List<ImageView> dotViewsList;
     private LinearLayout mLinearLayout;
     private ViewPager mViewPager;
-   
-    
+//   public interface ImageListener 
+//   {
+//	   public void onClick(View v);
+//   }
+//    private ImageListener mImageListener;
   
     public FlashView(Context context) {
         this(context,null);
@@ -96,12 +101,19 @@ public class FlashView extends FrameLayout {
     }
     public void setImageUris(List<String> imageuris)
     {
-    	
-    	for(int i=0;i<imageuris.size();i++)
+    	if(imageuris.size()<=0)//如果得到的图片张数为0，则增加一张默认的图片
     	{
-    		imageUris.add(imageuris.get(i));
-    		
+    		imageUris.add("drawable://"+R.drawable.defaultflashview);
+    	}else
+    	{
+    		for(int i=0;i<imageuris.size();i++)
+        	{
+        		imageUris.add(imageuris.get(i));
+        		
+        	}
     	}
+
+    
     	LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
         lp.setMargins(5, 0, 0, 0);
         for(int i=0;i<imageUris.size();i++){
@@ -119,24 +131,40 @@ public class FlashView extends FrameLayout {
         	dotViewsList.add(viewDot);
         	mLinearLayout.addView(viewDot); 
       }
-        mViewPager.setFocusable(true);
+        if(imageUris.size()<=1)
+        {
+        	mViewPager.setFocusable(false);
+        }
+        else
+        {
+        	 mViewPager.setFocusable(true);
+        }
+       
         mViewPager.setAdapter(new MyPagerAdapter());
       
         mViewPager.setOnPageChangeListener(new MyPageChangeListener());
-        try {
-            Field field = ViewPager.class.getDeclaredField("mScroller");
-            field.setAccessible(true);
-            FixedSpeedScroller scroller = new FixedSpeedScroller(mViewPager.getContext(),
-                    new AccelerateInterpolator());
-            field.set(mViewPager, scroller);
-            scroller.setmDuration(1000);
-        } catch (Exception e) {
-//            LogUtils.e(TAG, "", e);
+        if(imageUris.size()<=1)
+        {
+        	
+        }else
+        {
+        	try {
+                Field field = ViewPager.class.getDeclaredField("mScroller");
+                field.setAccessible(true);
+                FixedSpeedScroller scroller = new FixedSpeedScroller(mViewPager.getContext(),
+                        new AccelerateInterpolator());
+                field.set(mViewPager, scroller);
+                scroller.setmDuration(1000);
+                mViewPager.setCurrentItem(100*imageViewsList.size());
+                
+                mhandler.sendEmptyMessageDelayed(ImageHandler.MSG_UPDATE_IMAGE, ImageHandler.MSG_DELAY); 
+            } catch (Exception e) {
+//                LogUtils.e(TAG, "", e);
+            }
         }
+        
        // mViewPager.setPageTransformer(true,  new CubeTransformer());
-        mViewPager.setCurrentItem(100*imageViewsList.size());
-         
-        mhandler.sendEmptyMessageDelayed(ImageHandler.MSG_UPDATE_IMAGE, ImageHandler.MSG_DELAY); 
+      
         System.out.println("currentItem:::"+mViewPager.getCurrentItem());
     }
    
@@ -174,6 +202,7 @@ public class FlashView extends FrameLayout {
 			}
 			
 			View view = imageViewsList.get(position);
+//			view.setOnClickListener(this);
 			ViewParent vp=view.getParent();
 			if(vp!=null)
 			{
@@ -186,16 +215,29 @@ public class FlashView extends FrameLayout {
 
         @Override
         public int getCount() {
-         return Integer.MAX_VALUE;
+        	if(imageUris.size()<=1)
+        	{
+        		return 1;
+        	}else
+        	{
+        		  return Integer.MAX_VALUE;
+        	}
+       
         }
 
         @Override
         public boolean isViewFromObject(View arg0, Object arg1) {
            return arg0 == arg1;
         }
-       
+//
+//		@Override
+//		public void onClick(View v) {
+//			
+////			Toast.makeText(, , duration)
+//		}
+//       
     }
-  
+//  
     
 private class MyPageChangeListener implements OnPageChangeListener{
 
@@ -205,18 +247,25 @@ private class MyPageChangeListener implements OnPageChangeListener{
         public void onPageScrollStateChanged(int arg0) {
             // TODO Auto-generated method stub
           
-        	  switch (arg0) {  
-              case ViewPager.SCROLL_STATE_DRAGGING: 
-            	 
-                  mhandler.sendEmptyMessage(ImageHandler.MSG_KEEP_SILENT);  
-                  break;  
-              case ViewPager.SCROLL_STATE_IDLE:  
-            	  
-                  mhandler.sendEmptyMessageDelayed(ImageHandler.MSG_UPDATE_IMAGE, ImageHandler.MSG_DELAY);  
-                  break;  
-              default:  
-                  break;  
-              }  
+        	if(imageUris.size()<=1)
+        	{
+        		
+        	}else
+        	{
+        		switch (arg0) {  
+                case ViewPager.SCROLL_STATE_DRAGGING: 
+              	 
+                    mhandler.sendEmptyMessage(ImageHandler.MSG_KEEP_SILENT);  
+                    break;  
+                case ViewPager.SCROLL_STATE_IDLE:  
+              	  
+                    mhandler.sendEmptyMessageDelayed(ImageHandler.MSG_UPDATE_IMAGE, ImageHandler.MSG_DELAY);  
+                    break;  
+                default:  
+                    break;  
+                }  
+        	}
+        	  
         }
 
         @Override
@@ -228,9 +277,16 @@ private class MyPageChangeListener implements OnPageChangeListener{
         @Override
         public void onPageSelected(int pos) {// 锟铰憋拷为 pos 锟斤拷页锟斤拷锟斤拷锟斤拷锟阶帮拷锟绞憋拷锟斤拷锟斤拷么朔锟斤拷锟�
             // TODO Auto-generated method stub
-        	System.out.println("eeeeeeeeeee::::"+pos);
-        	mhandler.sendMessage(Message.obtain(mhandler, ImageHandler.MSG_PAGE_CHANGED, pos, 0));  
-        	 setImageBackground(pos);  
+        	if(imageUris.size()<=1)
+        	{
+        		
+        	}else
+        	{
+        		System.out.println("eeeeeeeeeee::::"+pos);
+            	mhandler.sendMessage(Message.obtain(mhandler, ImageHandler.MSG_PAGE_CHANGED, pos, 0));  
+            	 setImageBackground(pos); 
+        	}
+        	 
 
         }
         
@@ -259,7 +315,7 @@ private class MyPageChangeListener implements OnPageChangeListener{
 	}
 	/**
 	 * 
-	 * @author Chao Gong
+	 * @author Android将军
 	 *
 	 */
 	public class FixedSpeedScroller extends Scroller {
