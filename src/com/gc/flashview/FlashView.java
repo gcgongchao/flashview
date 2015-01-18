@@ -54,21 +54,7 @@ public class FlashView extends FrameLayout{
 	private List<ImageView> dotViewsList;
 	private LinearLayout mLinearLayout;
 	private ViewPager mViewPager;
-	
-	private FlashViewListener mFlashViewListener;
-//	=new FlashViewListener() {
-//		
-//		@Override
-//		public void onClick(int position) {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//	};
-//	public interface PhotoListener
-//	{
-//		public void onClick(int position);
-//	}
-//	PhotoListener mPhotoListener;
+	private FlashViewListener mFlashViewListener;//向外提供接口
 	public FlashView(Context context) 
 	{
 		this(context, null);
@@ -98,12 +84,15 @@ public class FlashView extends FrameLayout{
 		LayoutInflater.from(context).inflate(R.layout.layout_slideshow, this,true);
 		mLinearLayout = (LinearLayout) findViewById(R.id.linearlayout);
 		mViewPager = (ViewPager) findViewById(R.id.viewPager);
-		try {
-			 mFlashViewListener = (FlashViewListener) context;
-	        } catch (ClassCastException e) {
-	            throw new ClassCastException(context.toString()
-	                    + " must implement mPhotoListener");
-	        }
+		//mFlashViewListener必须实例化
+		try 
+		{
+			mFlashViewListener = (FlashViewListener) context;
+	    } 
+		catch (ClassCastException e) 
+		{
+	            throw new ClassCastException(context.toString()+ " must implement mPhotoListener");
+	    }
 	}
 	public void setImageUris(List<String> imageuris) {
 		if (imageuris.size() <= 0)// 如果得到的图片张数为0，则增加一张默认的图片
@@ -215,11 +204,10 @@ public class FlashView extends FrameLayout{
 			view.setOnClickListener(new OnClickListener() {
 				
 				@Override
-				public void onClick(View v) {
+				public void onClick(View v) 
+				{
 					// TODO Auto-generated method stub
 					mFlashViewListener.onClick(pos);
-//					mPhotoListener.onClick(pos);
-					
 				}
 			});
 			ViewParent vp = view.getParent();
