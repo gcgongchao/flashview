@@ -25,4 +25,27 @@ flashview
         imageUrls.add("http://www.237.cc/uploads/pcline/712_0_1680x1050.jpg");
         flashView.setImageUris(imageUrls);
         
-此代码使用比较简单，后续我会加入轮播切换的效果，至于切换动画的一些类已经在里面了，下次更新时，将和自定义的控件一起使用。
+此代码使用比较简单，后续我会加入轮播切换的效果，至于切换动画的一些类已经在里面了，下次更新时，将和自定义的控件一起使用。<br/>
+（3）如果想对图片进行点击事件监听，可以在你的Activity或Fragment实现FlashViewListener接口，用法如下：<br/>
+
+   public class MainActivity extends Activity  implements FlashViewListener{
+   	private FlashView flashView;
+   	private List<String> imageUrls;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        flashView=(FlashView)findViewById(R.id.flash_view);
+        imageUrls=new ArrayList<String>();
+        imageUrls.add("http://www.qipaox.com/tupian/200810/20081051924582.jpg");
+        imageUrls.add("http://www.bz55.com/uploads1/allimg/120312/1_120312100435_8.jpg");
+        imageUrls.add("http://img3.iqilu.com/data/attachment/forum/201308/21/192654ai88zf6zaa60zddo.jpg");
+        imageUrls.add("http://img2.pconline.com.cn/pconline/0706/19/1038447_34.jpg");
+        flashView.setImageUris(imageUrls);
+    }
+    @Override
+    public void onClick(int position) {
+    // TODO Auto-generated method stub
+    Toast.makeText(getApplicationContext(), "你的点击的是第"+(position+1)+"张图片！", 1000).show();
+    }
+	
