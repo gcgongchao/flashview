@@ -8,6 +8,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+
+
+import com.gc.flashview.listener.FlashViewListener;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -41,97 +45,111 @@ import android.widget.Toast;
  * 
  */
 @SuppressLint("HandlerLeak")
-public class FlashView extends FrameLayout {
+public class FlashView extends FrameLayout{
 
 	private ImageLoaderTools imageLoaderTools;
-	private ImageHandler mhandler = new ImageHandler(
-			new WeakReference<FlashView>(this));
-
+	private ImageHandler mhandler = new ImageHandler(new WeakReference<FlashView>(this));
 	private List<String> imageUris;
 	private List<ImageView> imageViewsList;
 	private List<ImageView> dotViewsList;
 	private LinearLayout mLinearLayout;
 	private ViewPager mViewPager;
-
-	// public interface ImageListener
-	// {
-	// public void onClick(View v);
-	// }
-	// private ImageListener mImageListener;
-
-	public FlashView(Context context) {
+	
+	private FlashViewListener mFlashViewListener;
+//	=new FlashViewListener() {
+//		
+//		@Override
+//		public void onClick(int position) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//	};
+//	public interface PhotoListener
+//	{
+//		public void onClick(int position);
+//	}
+//	PhotoListener mPhotoListener;
+	public FlashView(Context context) 
+	{
 		this(context, null);
+		 
 	}
-
-	public FlashView(Context context, AttributeSet attrs) {
+	public FlashView(Context context, AttributeSet attrs) 
+	{
 		this(context, attrs, 0);
 	}
-
-	public FlashView(Context context, AttributeSet attrs, int defStyle) {
+	public FlashView(Context context, AttributeSet attrs, int defStyle)
+	{
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
-
 		initUI(context);
-		if (!(imageUris.size() <= 0)) {
+		if (!(imageUris.size() <= 0)) 
+		{
 			setImageUris(imageUris);
 		}
 
 	}
-
-	private void initUI(Context context) {
+	private void initUI(Context context) 
+	{
 		imageViewsList = new ArrayList<ImageView>();
 		dotViewsList = new ArrayList<ImageView>();
 		imageUris = new ArrayList<String>();
-		imageLoaderTools = ImageLoaderTools.getInstance(context
-				.getApplicationContext());
-		LayoutInflater.from(context).inflate(R.layout.layout_slideshow, this,
-				true);
+		imageLoaderTools = ImageLoaderTools.getInstance(context.getApplicationContext());
+		LayoutInflater.from(context).inflate(R.layout.layout_slideshow, this,true);
 		mLinearLayout = (LinearLayout) findViewById(R.id.linearlayout);
 		mViewPager = (ViewPager) findViewById(R.id.viewPager);
-
+		try {
+			 mFlashViewListener = (FlashViewListener) context;
+	        } catch (ClassCastException e) {
+	            throw new ClassCastException(context.toString()
+	                    + " must implement mPhotoListener");
+	        }
 	}
-
 	public void setImageUris(List<String> imageuris) {
 		if (imageuris.size() <= 0)// 如果得到的图片张数为0，则增加一张默认的图片
 		{
 			imageUris.add("drawable://" + R.drawable.defaultflashview);
-		} else {
-			for (int i = 0; i < imageuris.size(); i++) {
+		}
+		else 
+		{
+			for (int i = 0; i < imageuris.size(); i++) 
+			{
 				imageUris.add(imageuris.get(i));
 
 			}
 		}
 
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.WRAP_CONTENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
 		lp.setMargins(5, 0, 0, 0);
-		for (int i = 0; i < imageUris.size(); i++) {
+		for (int i = 0; i < imageUris.size(); i++) 
+		{
 			ImageView imageView = new ImageView(getContext());
 			imageView.setScaleType(ScaleType.FIT_XY);// X和Y方向都填满
 			imageLoaderTools.displayImage(imageUris.get(i), imageView);
 			imageViewsList.add(imageView);
 			ImageView viewDot = new ImageView(getContext());
-			if (i == 0) {
+			if (i == 0) 
+			{
 				viewDot.setBackgroundResource(R.drawable.dot_white);
-			} else {
+			} else 
+			{
 				viewDot.setBackgroundResource(R.drawable.dot_light);
 			}
 			viewDot.setLayoutParams(lp);
 			dotViewsList.add(viewDot);
 			mLinearLayout.addView(viewDot);
 		}
-
 		mViewPager.setFocusable(true);
-
 		mViewPager.setAdapter(new MyPagerAdapter());
-
 		mViewPager.setOnPageChangeListener(new MyPageChangeListener());
-		if (imageUris.size() <= 1) {
+		if (imageUris.size() <= 1)
+		{
 
-		} else {
+		} else 
+		{
 			// 利用反射修改自动轮播的动画持续时间
-			try {
+			try 
+			{
 				Field field = ViewPager.class.getDeclaredField("mScroller");
 				field.setAccessible(true);
 				FixedSpeedScroller scroller = new FixedSpeedScroller(
@@ -142,7 +160,8 @@ public class FlashView extends FrameLayout {
 
 				mhandler.sendEmptyMessageDelayed(ImageHandler.MSG_UPDATE_IMAGE,
 						ImageHandler.MSG_DELAY);
-			} catch (Exception e) {
+			} catch (Exception e) 
+			{
 
 			}
 		}
@@ -154,11 +173,15 @@ public class FlashView extends FrameLayout {
 	 * 
 	 * @param selectItems
 	 */
-	private void setImageBackground(int selectItems) {
-		for (int i = 0; i < dotViewsList.size(); i++) {
-			if (i == selectItems % dotViewsList.size()) {
+	private void setImageBackground(int selectItems) 
+	{
+		for (int i = 0; i < dotViewsList.size(); i++) 
+		{
+			if (i == selectItems % dotViewsList.size()) 
+			{
 				dotViewsList.get(i).setBackgroundResource(R.drawable.dot_white);
-			} else {
+			} else 
+			{
 				dotViewsList.get(i).setBackgroundResource(R.drawable.dot_light);
 			}
 		}
@@ -169,27 +192,39 @@ public class FlashView extends FrameLayout {
 	 * 数据适配器
 	 * 
 	 */
-	private class MyPagerAdapter extends PagerAdapter {
-
+	private class MyPagerAdapter extends PagerAdapter 
+	{
 		@Override
-		public void destroyItem(View container, int position, Object object) {
+		public void destroyItem(View container, int position, Object object) 
+		{
 
 		}
-
 		@Override
-		public Object instantiateItem(View container, int position) {
-
+		public Object instantiateItem(View container,  int position) 
+		{
 			position = position % imageViewsList.size();
-
-			if (position < 0) {
+			
+			if (position < 0) 
+			{
 				position = position + imageViewsList.size();
 
 			}
-
+			final int pos=position;
 			View view = imageViewsList.get(position);
-			// view.setOnClickListener(this);
+			view.setTag(position);
+			view.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					mFlashViewListener.onClick(pos);
+//					mPhotoListener.onClick(pos);
+					
+				}
+			});
 			ViewParent vp = view.getParent();
-			if (vp != null) {
+			if (vp != null) 
+			{
 				ViewPager pager = (ViewPager) vp;
 				pager.removeView(view);
 			}
@@ -199,7 +234,8 @@ public class FlashView extends FrameLayout {
 
 		@Override
 		public int getCount() {
-			if (imageUris.size() <= 1) {
+			if (imageUris.size() <= 1) 
+			{
 				return 1;
 			} else {
 				return Integer.MAX_VALUE;
@@ -211,32 +247,22 @@ public class FlashView extends FrameLayout {
 		public boolean isViewFromObject(View arg0, Object arg1) {
 			return arg0 == arg1;
 		}
-		//
-		// @Override
-		// public void onClick(View v) {
-		//
-		// // Toast.makeText(, , duration)
-		// }
-		//
 	}
-
-	//
-
-	private class MyPageChangeListener implements OnPageChangeListener {
+	private class MyPageChangeListener implements OnPageChangeListener 
+	{
 
 		@Override
-		public void onPageScrollStateChanged(int arg0) {
+		public void onPageScrollStateChanged(int arg0) 
+		{
 			// TODO Auto-generated method stub
 
-			switch (arg0) {
+			switch (arg0) 
+			{
 			case ViewPager.SCROLL_STATE_DRAGGING:
-
 				mhandler.sendEmptyMessage(ImageHandler.MSG_KEEP_SILENT);
 				break;
 			case ViewPager.SCROLL_STATE_IDLE:
-
-				mhandler.sendEmptyMessageDelayed(ImageHandler.MSG_UPDATE_IMAGE,
-						ImageHandler.MSG_DELAY);
+				mhandler.sendEmptyMessageDelayed(ImageHandler.MSG_UPDATE_IMAGE,ImageHandler.MSG_DELAY);
 				break;
 			default:
 				break;
@@ -253,9 +279,7 @@ public class FlashView extends FrameLayout {
 		@Override
 		public void onPageSelected(int pos) {
 			// TODO Auto-generated method stub
-
-			mhandler.sendMessage(Message.obtain(mhandler,
-					ImageHandler.MSG_PAGE_CHANGED, pos, 0));
+			mhandler.sendMessage(Message.obtain(mhandler,ImageHandler.MSG_PAGE_CHANGED, pos, 0));
 			setImageBackground(pos);
 
 		}
@@ -263,19 +287,21 @@ public class FlashView extends FrameLayout {
 	}
 
 	@SuppressWarnings("unused")
-	private void destoryBitmaps() {
-
-		for (int i = 0; i < imageViewsList.size(); i++) {
+	private void destoryBitmaps() 
+	{
+		for (int i = 0; i < imageViewsList.size(); i++) 
+		{
 			ImageView imageView = imageViewsList.get(i);
 			Drawable drawable = imageView.getDrawable();
-			if (drawable != null) {
-
+			if (drawable != null) 
+			{
 				drawable.setCallback(null);
 			}
 		}
 	}
 
-	public void setPageTransformer(boolean b, PageTransformer rotateTransformer) {
+	public void setPageTransformer(boolean b, PageTransformer rotateTransformer)
+	{
 		// TODO Auto-generated method stub
 		mViewPager.setPageTransformer(b, rotateTransformer);
 	}
@@ -285,40 +311,47 @@ public class FlashView extends FrameLayout {
 	 * FixedSpeedScroller类的源码来源于网络，在此谢过贡献此代码的道友
 	 * 
 	 */
-	public class FixedSpeedScroller extends Scroller {
+	public class FixedSpeedScroller extends Scroller 
+	{
 		private int mDuration = 1500;
 
-		public FixedSpeedScroller(Context context) {
+		public FixedSpeedScroller(Context context) 
+		{
 			super(context);
 		}
 
-		public FixedSpeedScroller(Context context, Interpolator interpolator) {
+		public FixedSpeedScroller(Context context, Interpolator interpolator) 
+		{
 			super(context, interpolator);
 		}
 
 		@Override
-		public void startScroll(int startX, int startY, int dx, int dy,
-				int duration) {
+		public void startScroll(int startX, int startY, int dx, int dy,int duration) 
+		{
 
 			super.startScroll(startX, startY, dx, dy, mDuration);
 		}
 
 		@Override
-		public void startScroll(int startX, int startY, int dx, int dy) {
+		public void startScroll(int startX, int startY, int dx, int dy) 
+		{
 
 			super.startScroll(startX, startY, dx, dy, mDuration);
 		}
 
-		public void setmDuration(int time) {
+		public void setmDuration(int time) 
+		{
 			mDuration = time;
 		}
 
-		public int getmDuration() {
+		public int getmDuration() 
+		{
 			return mDuration;
 		}
 	}
 
-	private static class ImageHandler extends Handler {
+	private static class ImageHandler extends Handler 
+	{
 
 		protected static final int MSG_UPDATE_IMAGE = 1;
 
@@ -333,47 +366,43 @@ public class FlashView extends FrameLayout {
 		private WeakReference<FlashView> weakReference;
 		private int currentItem = 0;
 
-		protected ImageHandler(WeakReference<FlashView> wk) {
+		protected ImageHandler(WeakReference<FlashView> wk) 
+		{
 			weakReference = wk;
 			System.out.println("dsfdsfdsf:::" + currentItem);
 		}
 
 		@Override
-		public void handleMessage(Message msg) {
+		public void handleMessage(Message msg) 
+		{
 			super.handleMessage(msg);
 
 			FlashView activity = weakReference.get();
-			if (activity == null) {
-
+			if (activity == null) 
+			{
 				return;
 			}
-
-			if (activity.mhandler.hasMessages(MSG_UPDATE_IMAGE)) {
+			if (activity.mhandler.hasMessages(MSG_UPDATE_IMAGE))
+			{
 				if (currentItem > 0)// 这里必须加入currentItem>0的判断，否则不能完美的自动轮播
 				{
-
 					activity.mhandler.removeMessages(MSG_UPDATE_IMAGE);
 				}
-
 			}
-			switch (msg.what) {
+			switch (msg.what)
+			{
 			case MSG_UPDATE_IMAGE:
 				System.out.println("cccccc:::" + currentItem);
 				currentItem++;
 				activity.mViewPager.setCurrentItem(currentItem);
-
-				activity.mhandler.sendEmptyMessageDelayed(MSG_UPDATE_IMAGE,
-						MSG_DELAY);
+				activity.mhandler.sendEmptyMessageDelayed(MSG_UPDATE_IMAGE,MSG_DELAY);
 				break;
 			case MSG_KEEP_SILENT:
-
 				break;
 			case MSG_BREAK_SILENT:
-				activity.mhandler.sendEmptyMessageDelayed(MSG_UPDATE_IMAGE,
-						MSG_DELAY);
+				activity.mhandler.sendEmptyMessageDelayed(MSG_UPDATE_IMAGE,MSG_DELAY);
 				break;
 			case MSG_PAGE_CHANGED:
-
 				currentItem = msg.arg1;
 				break;
 			default:
