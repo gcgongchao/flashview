@@ -28,4 +28,11 @@ public final class R {
         public static int app_name=0x7f040000;
         public static int hello_world=0x7f040001;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a FlashView.
+         */
+        public static final int[] FlashView = {
+            
+        };
+    };
 }
