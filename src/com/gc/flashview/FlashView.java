@@ -52,6 +52,7 @@ import android.widget.Toast;
  * 
  * @author Android将军
  * 
+ * 
  */
 @SuppressLint("HandlerLeak")
 public class FlashView extends FrameLayout{
