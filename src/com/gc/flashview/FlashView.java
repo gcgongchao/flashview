@@ -86,7 +86,7 @@ public class FlashView extends FrameLayout{
 		initUI(context);
 		if (!(imageUris.size() <= 0)) 
 		{
-			setImageUris(imageUris);
+			setImageUris(imageUris);//
 		}
 
 	}
