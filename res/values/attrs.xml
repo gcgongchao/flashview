@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FlashView">
+        <attr name="effect">
+            <enum name="accordion" value="0"/>
+            <enum name="cube" value="1"/>
+            <enum name="def" value="2"/>
+            <enum name="depthPage" value="3"/>
+            <enum name="inRightDown" value="4"/>
+            <enum name="inRightUp" value="5"/>
+            <enum name="rotate" value="6"/>
+            <enum name="zoomOutPage" value="7"/>
+            
+        </attr>
+    </declare-styleable>
+</resources>

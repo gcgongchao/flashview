@@ -10,10 +10,19 @@ import java.util.concurrent.TimeUnit;
 
 
 
+import com.gc.flashview.effect.AccordionTransformer;
+import com.gc.flashview.effect.CubeTransformer;
+import com.gc.flashview.effect.DefaultTransformer;
+import com.gc.flashview.effect.DepthPageTransformer;
+import com.gc.flashview.effect.InRightDownTransformer;
+import com.gc.flashview.effect.InRightUpTransformer;
+import com.gc.flashview.effect.RotateTransformer;
+import com.gc.flashview.effect.ZoomOutPageTransformer;
 import com.gc.flashview.listener.FlashViewListener;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -43,6 +52,7 @@ import android.widget.Toast;
  * 
  * @author Android将军
  * 
+ * 
  */
 @SuppressLint("HandlerLeak")
 public class FlashView extends FrameLayout{
@@ -55,6 +65,7 @@ public class FlashView extends FrameLayout{
 	private LinearLayout mLinearLayout;
 	private ViewPager mViewPager;
 	private FlashViewListener mFlashViewListener;//向外提供接口
+	private int effect;//图片切换的动画效果
 	public FlashView(Context context) 
 	{
 		this(context, null);
@@ -68,10 +79,14 @@ public class FlashView extends FrameLayout{
 	{
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
+		//读取该自定义控件自定义的属性
+		TypedArray mTypedArray=context.obtainStyledAttributes(attrs, R.styleable.FlashView);
+		effect=mTypedArray.getInt(R.styleable.FlashView_effect, 2);
+		
 		initUI(context);
 		if (!(imageUris.size() <= 0)) 
 		{
-			setImageUris(imageUris);
+			setImageUris(imageUris);//
 		}
 
 	}
@@ -131,6 +146,7 @@ public class FlashView extends FrameLayout{
 		mViewPager.setFocusable(true);
 		mViewPager.setAdapter(new MyPagerAdapter());
 		mViewPager.setOnPageChangeListener(new MyPageChangeListener());
+		setEffect(effect);
 		if (imageUris.size() <= 1)
 		{
 
@@ -288,6 +304,42 @@ public class FlashView extends FrameLayout{
 		}
 	}
 
+	public void setEffect(int selectEffect)
+	{
+		switch (selectEffect) {
+		case 0:
+			setPageTransformer(true,new AccordionTransformer());
+			break;
+		case 1:
+			setPageTransformer(true,new CubeTransformer());
+			break;
+		case 2:
+			setPageTransformer(true,new DefaultTransformer());
+			break;
+		case 3:
+			setPageTransformer(true,new DepthPageTransformer());
+			break;
+		case 4:
+			setPageTransformer(true,new InRightDownTransformer());
+			break;
+		case 5:
+			setPageTransformer(true,new InRightUpTransformer());
+			break;
+		case 6:
+			setPageTransformer(true,new RotateTransformer());
+			break;
+		case 7:setPageTransformer(true,new ZoomOutPageTransformer());
+			
+			break;
+		default:
+			break;
+		}
+	}
+	/**
+	 * 设置切换效果
+	 * @param b
+	 * @param rotateTransformer
+	 */
 	public void setPageTransformer(boolean b, PageTransformer rotateTransformer)
 	{
 		// TODO Auto-generated method stub
