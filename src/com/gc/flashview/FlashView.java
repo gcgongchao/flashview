@@ -60,11 +60,13 @@ public class FlashView extends FrameLayout{
 	private ImageLoaderTools imageLoaderTools;
 	private ImageHandler mhandler = new ImageHandler(new WeakReference<FlashView>(this));
 	private List<String> imageUris;
+	private Context context;
 	private List<ImageView> imageViewsList;
 	private List<ImageView> dotViewsList;
 	private LinearLayout mLinearLayout;
 	private ViewPager mViewPager;
 	private FlashViewListener mFlashViewListener;//向外提供接口
+	
 	private int effect;//图片切换的动画效果
 	public FlashView(Context context) 
 	{
@@ -80,6 +82,7 @@ public class FlashView extends FrameLayout{
 		super(context, attrs, defStyle);
 		// TODO Auto-generated constructor stub
 		//读取该自定义控件自定义的属性
+		this.context=context;
 		TypedArray mTypedArray=context.obtainStyledAttributes(attrs, R.styleable.FlashView);
 		effect=mTypedArray.getInt(R.styleable.FlashView_effect, 2);
 		
@@ -89,6 +92,15 @@ public class FlashView extends FrameLayout{
 			setImageUris(imageUris);//
 		}
 
+	}
+	/**
+	 * 设置监听
+	 * @param mFlashViewListener
+	 */
+	public void setOnPageClickListener(FlashViewListener mFlashViewListener)
+	{
+	
+		this.mFlashViewListener=mFlashViewListener;
 	}
 	private void initUI(Context context) 
 	{
@@ -100,14 +112,7 @@ public class FlashView extends FrameLayout{
 		mLinearLayout = (LinearLayout) findViewById(R.id.linearlayout);
 		mViewPager = (ViewPager) findViewById(R.id.viewPager);
 		//mFlashViewListener必须实例化
-		try 
-		{
-			mFlashViewListener = (FlashViewListener) context;
-	    } 
-		catch (ClassCastException e) 
-		{
-	            throw new ClassCastException(context.toString()+ " must implement mPhotoListener");
-	    }
+		
 	}
 	public void setImageUris(List<String> imageuris) {
 		if (imageuris.size() <= 0)// 如果得到的图片张数为0，则增加一张默认的图片
@@ -222,8 +227,14 @@ public class FlashView extends FrameLayout{
 				@Override
 				public void onClick(View v) 
 				{
-					// TODO Auto-generated method stub
-					mFlashViewListener.onClick(pos);
+					if(mFlashViewListener!=null)
+					{
+						mFlashViewListener.onClick(pos);
+					}else
+					{
+						
+					}
+					
 				}
 			});
 			ViewParent vp = view.getParent();
