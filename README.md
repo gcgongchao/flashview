@@ -51,3 +51,4 @@ flashview
            }
 	
 如果在使用过程有任何bug，意见和指导，欢迎反馈与指导。本次加入的动画效果的代码来源于网络，在此感谢贡献此动画效果的作者。下次更新会尝试加入自己写的动画效果，欢迎star。
+[楼主博客地址](http://blog.csdn.net/android_jiangjun/article/details/39638129)<br />
