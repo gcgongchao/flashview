@@ -49,6 +49,41 @@ flashview
            // TODO Auto-generated method stub
            Toast.makeText(getApplicationContext(), "你的点击的是第"+(position+1)+"张图片！", 1000).show();
            }
+如把FlashView作为HeadView的时候，会有一个不会滚动的bug，按照如下方式修改FlashView即可：
 	
+		private void initUI(Context context) {
+		imageViewsList = new ArrayList<ImageView>();
+		dotViewsList = new ArrayList<ImageView>();
+		imageUris = new ArrayList<String>();
+		mBitmapLoader =new BitmapLoader(context);
+		View view=LayoutInflater.from(context).inflate(R.layout.layout_slideshow, null);
+		mLinearLayout = (LinearLayout) view.findViewById(R.id.linearlayout);
+		mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
+		/**
+		 * 解决FlashView作为HeadView时的滑动冲突
+		 */
+		mViewPager.setOnTouchListener(new OnTouchListener() {
+			 
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				PointF downP = new PointF();
+			    PointF curP = new PointF();
+			    int act = event.getAction();
+			    if(act == MotionEvent.ACTION_DOWN || act == MotionEvent.ACTION_MOVE || act ==	    MotionEvent.ACTION_UP){
+			     ((ViewGroup) v).requestDisallowInterceptTouchEvent(true);
+			      if (downP.x == curP.x && downP.y == curP.y) {
+			        return false;
+			      }
+			    }
+			    return false;
+			}
+		});
+		addView(view);
+		
+		// mFlashViewListener必须实例化
+
+	}
 如果在使用过程有任何bug，意见和指导，欢迎反馈与指导。本次加入的动画效果的代码来源于网络，在此感谢贡献此动画效果的作者。下次更新会尝试加入自己写的动画效果，欢迎star。
 [楼主博客地址](http://blog.csdn.net/android_jiangjun/article/details/39638129)<br />
